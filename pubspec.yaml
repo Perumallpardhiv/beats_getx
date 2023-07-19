@@ -94,6 +94,9 @@ flutter:
     - family: five
       fonts:
         - asset: assets/fonts/RubikVinyl-Regular.ttf
+    - family: six
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

@@ -3,16 +3,13 @@ import 'package:get/get.dart';
 import 'package:musicplayer/consts/colors.dart';
 import 'package:musicplayer/consts/textStyle.dart';
 import 'package:musicplayer/controllers/player_controller.dart';
+import 'package:musicplayer/screens/player.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
-class HomePage extends StatefulWidget {
+// ignore: must_be_immutable
+class HomePage extends StatelessWidget {
   HomePage({super.key});
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
   var controller = Get.put(PlayerController());
 
   @override
@@ -53,7 +50,7 @@ class _HomePageState extends State<HomePage> {
         ),
         builder: (context, snapshot) {
           if (snapshot.data == null) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           } else if (snapshot.data!.isEmpty) {
@@ -67,13 +64,13 @@ class _HomePageState extends State<HomePage> {
             return Padding(
               padding: const EdgeInsets.all(10),
               child: ListView.builder(
-                physics: BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
                   if (snapshot.data![index].fileExtension == "mp3" &&
                       snapshot.data![index].artist != "<unknown>") {
                     return Container(
-                      margin: EdgeInsets.only(bottom: 8),
+                      margin: const EdgeInsets.only(bottom: 8),
                       child: ListTile(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
@@ -107,32 +104,75 @@ class _HomePageState extends State<HomePage> {
                         trailing: Obx(() {
                           if (controller.playindex.value == index &&
                               controller.isPlaying.value == true) {
-                            return const Icon(
-                              Icons.pause_rounded,
-                              color: whitecolor,
-                              size: 26,
+                            return IconButton(
+                              onPressed: () {
+                                controller.audioPlayer.pause();
+                                controller.isPlaying(false);
+                              },
+                              icon: const Icon(
+                                Icons.pause_rounded,
+                                color: whitecolor,
+                                size: 26,
+                              ),
                             );
                           } else {
-                            return const Icon(
-                              Icons.play_arrow_rounded,
-                              color: whitecolor,
-                              size: 26,
+                            return IconButton(
+                              onPressed: () {
+                                if (controller.playindex.value == index) {
+                                  controller.audioPlayer.play();
+                                  controller.isPlaying(true);
+                                } else {
+                                  controller.playsong(
+                                    snapshot.data![index].uri.toString(),
+                                    index,
+                                  );
+                                }
+                              },
+                              icon: const Icon(
+                                Icons.play_arrow_rounded,
+                                color: whitecolor,
+                                size: 26,
+                              ),
                             );
                           }
                         }),
                         onTap: () {
-                          controller.playindex.value == index &&
-                                  controller.isPlaying.value == true
-                              ? controller.pauseSong()
-                              : controller.playsong(
+                          if (controller.playindex.value == index &&
+                              controller.isPlaying.value == true) {
+                            Get.to(
+                              () => Player(
+                                songModel: snapshot.data![index],
+                                index: index,
+                              ),
+                              transition: Transition.native,
+                              duration: const Duration(milliseconds: 500),
+                            );
+                          } else {
+                            if (!controller.isPlaying.value) {
+                              if (controller.playindex.value == index) {
+                                controller.audioPlayer.play();
+                                controller.isPlaying(true);
+                              } else {
+                                controller.playsong(
                                   snapshot.data![index].uri.toString(),
                                   index,
                                 );
+                              }
+                            }
+                            Get.to(
+                              () => Player(
+                                songModel: snapshot.data![index],
+                                index: index,
+                              ),
+                              transition: Transition.native,
+                              duration: const Duration(milliseconds: 500),
+                            );
+                          }
                         },
                       ),
                     );
                   } else {
-                    return SizedBox.shrink();
+                    return const SizedBox.shrink();
                   }
                 },
               ),

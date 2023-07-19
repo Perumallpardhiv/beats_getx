@@ -31,7 +31,6 @@ class PlayerController extends GetxController {
   pauseSong() {
     try {
       isPlaying(false);
-      playindex.value = 0;
       audioPlayer.pause();
     } catch (e) {
       print(e);
