@@ -121,6 +121,7 @@ class HomePage extends StatelessWidget {
                                 if (controller.playindex.value == index) {
                                   controller.audioPlayer.play();
                                   controller.isPlaying(true);
+                                  controller.updatePostiion();
                                 } else {
                                   controller.playsong(
                                     snapshot.data![index].uri.toString(),
@@ -152,6 +153,7 @@ class HomePage extends StatelessWidget {
                               if (controller.playindex.value == index) {
                                 controller.audioPlayer.play();
                                 controller.isPlaying(true);
+                                controller.updatePostiion();
                               } else {
                                 controller.playsong(
                                   snapshot.data![index].uri.toString(),

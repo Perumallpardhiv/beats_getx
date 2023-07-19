@@ -89,33 +89,40 @@ class Player extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Text(
-                          "00:00",
-                          style: ourTextStyle(
-                            color: bgDarkcolor,
-                            size: 14,
+                    Obx(() {
+                      return Row(
+                        children: [
+                          Text(
+                            controller.position.value,
+                            style: ourTextStyle(
+                              color: bgDarkcolor,
+                              size: 14,
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: Slider(
-                            thumbColor: slidercolor,
-                            activeColor: slidercolor,
-                            inactiveColor: bgcolor,
-                            value: 0.0,
-                            onChanged: (newValue) {},
+                          Expanded(
+                            child: Slider(
+                              thumbColor: slidercolor,
+                              activeColor: slidercolor,
+                              inactiveColor: bgcolor,
+                              value: controller.value.value,
+                              max: controller.max.value,
+                              min: Duration(seconds: 0).inSeconds.toDouble(),
+                              onChanged: (newValue) {
+                                controller
+                                    .changeDurationToSeconds(newValue.toInt());
+                              },
+                            ),
                           ),
-                        ),
-                        Text(
-                          "04:00",
-                          style: ourTextStyle(
-                            color: bgDarkcolor,
-                            size: 14,
+                          Text(
+                            controller.duration.value,
+                            style: ourTextStyle(
+                              color: bgDarkcolor,
+                              size: 14,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      );
+                    }),
                     SizedBox(height: 12),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -143,6 +150,7 @@ class Player extends StatelessWidget {
                                     controller.audioPlayer.play();
                                     controller.isPlaying(true);
                                     controller.playindex.value = index;
+                                    controller.updatePostiion();
                                   }
                                 },
                                 icon: !controller.isPlaying.value
