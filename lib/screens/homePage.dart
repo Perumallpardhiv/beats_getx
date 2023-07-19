@@ -11,6 +11,7 @@ class HomePage extends StatelessWidget {
   HomePage({super.key});
 
   var controller = Get.put(PlayerController());
+  List<SongModel> originalSnapshot = [];
 
   @override
   Widget build(BuildContext context) {
@@ -61,121 +62,122 @@ class HomePage extends StatelessWidget {
               ),
             );
           } else {
+            for (int i = 0; i < snapshot.data!.length; i++) {
+              if (snapshot.data![i].fileExtension == "mp3" &&
+                  snapshot.data![i].artist != "<unknown>") {
+                originalSnapshot.add(snapshot.data![i]);
+              }
+            }
             return Padding(
               padding: const EdgeInsets.all(10),
               child: ListView.builder(
                 physics: const BouncingScrollPhysics(),
-                itemCount: snapshot.data!.length,
+                itemCount: originalSnapshot.length,
                 itemBuilder: (context, index) {
-                  if (snapshot.data![index].fileExtension == "mp3" &&
-                      snapshot.data![index].artist != "<unknown>") {
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 8),
-                      child: ListTile(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    child: ListTile(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      tileColor: bgcolor,
+                      title: Text(
+                        originalSnapshot[index].displayNameWOExt,
+                        style: ourTextStyle(
+                          family: "two",
+                          size: 15,
+                          letterSpacing: 1,
                         ),
-                        tileColor: bgcolor,
-                        title: Text(
-                          snapshot.data![index].displayNameWOExt,
-                          style: ourTextStyle(
-                            family: "two",
-                            size: 15,
-                            letterSpacing: 1,
-                          ),
+                      ),
+                      subtitle: Text(
+                        "${originalSnapshot[index].artist}",
+                        style: ourTextStyle(
+                          family: "one",
+                          size: 12,
+                          letterSpacing: 0.5,
                         ),
-                        subtitle: Text(
-                          "${snapshot.data![index].artist}",
-                          style: ourTextStyle(
-                            family: "one",
-                            size: 12,
-                            letterSpacing: 0.5,
-                          ),
+                      ),
+                      leading: QueryArtworkWidget(
+                        id: originalSnapshot[index].id,
+                        type: ArtworkType.AUDIO,
+                        nullArtworkWidget: const Icon(
+                          Icons.music_note_rounded,
+                          color: whitecolor,
+                          size: 32,
                         ),
-                        leading: QueryArtworkWidget(
-                          id: snapshot.data![index].id,
-                          type: ArtworkType.AUDIO,
-                          nullArtworkWidget: const Icon(
-                            Icons.music_note_rounded,
-                            color: whitecolor,
-                            size: 32,
-                          ),
-                        ),
-                        trailing: Obx(() {
-                          if (controller.playindex.value == index &&
-                              controller.isPlaying.value == true) {
-                            return IconButton(
-                              onPressed: () {
-                                controller.audioPlayer.pause();
-                                controller.isPlaying(false);
-                              },
-                              icon: const Icon(
-                                Icons.pause_rounded,
-                                color: whitecolor,
-                                size: 26,
-                              ),
-                            );
-                          } else {
-                            return IconButton(
-                              onPressed: () {
-                                if (controller.playindex.value == index) {
-                                  controller.audioPlayer.play();
-                                  controller.isPlaying(true);
-                                  controller.updatePostiion();
-                                } else {
-                                  controller.playsong(
-                                    snapshot.data![index].uri.toString(),
-                                    index,
-                                  );
-                                }
-                              },
-                              icon: const Icon(
-                                Icons.play_arrow_rounded,
-                                color: whitecolor,
-                                size: 26,
-                              ),
-                            );
-                          }
-                        }),
-                        onTap: () {
-                          if (controller.playindex.value == index &&
-                              controller.isPlaying.value == true) {
-                            Get.to(
-                              () => Player(
-                                songModel: snapshot.data![index],
-                                index: index,
-                              ),
-                              transition: Transition.native,
-                              duration: const Duration(milliseconds: 500),
-                            );
-                          } else {
-                            if (!controller.isPlaying.value) {
+                      ),
+                      trailing: Obx(() {
+                        if (controller.playindex.value == index &&
+                            controller.isPlaying.value == true) {
+                          return IconButton(
+                            onPressed: () {
+                              controller.audioPlayer.pause();
+                              controller.isPlaying(false);
+                            },
+                            icon: const Icon(
+                              Icons.pause_rounded,
+                              color: whitecolor,
+                              size: 26,
+                            ),
+                          );
+                        } else {
+                          return IconButton(
+                            onPressed: () {
                               if (controller.playindex.value == index) {
                                 controller.audioPlayer.play();
                                 controller.isPlaying(true);
                                 controller.updatePostiion();
                               } else {
                                 controller.playsong(
-                                  snapshot.data![index].uri.toString(),
+                                  originalSnapshot[index].uri.toString(),
                                   index,
                                 );
                               }
+                            },
+                            icon: const Icon(
+                              Icons.play_arrow_rounded,
+                              color: whitecolor,
+                              size: 26,
+                            ),
+                          );
+                        }
+                      }),
+                      onTap: () {
+                        if (controller.playindex.value == index &&
+                            controller.isPlaying.value == true) {
+                          Get.to(
+                            () => Player(
+                              songModel: originalSnapshot,
+                              index: index,
+                            ),
+                            transition: Transition.native,
+                            duration: const Duration(milliseconds: 500),
+                          );
+                        } else {
+                          if (!controller.isPlaying.value) {
+                            if (controller.playindex.value == index) {
+                              controller.audioPlayer.play();
+                              controller.isPlaying(true);
+                              controller.updatePostiion();
+                            } else {
+                              controller.playsong(
+                                originalSnapshot[index].uri.toString(),
+                                index,
+                              );
                             }
-                            Get.to(
-                              () => Player(
-                                songModel: snapshot.data![index],
-                                index: index,
-                              ),
-                              transition: Transition.native,
-                              duration: const Duration(milliseconds: 500),
-                            );
                           }
-                        },
-                      ),
-                    );
-                  } else {
-                    return const SizedBox.shrink();
-                  }
+                          Get.to(
+                            () => Player(
+                              songModel: originalSnapshot,
+                              index: index,
+                            ),
+                            transition: Transition.native,
+                            duration: const Duration(milliseconds: 500),
+                          );
+                        }
+                      },
+                    ),
+                  );
                 },
               ),
             );
