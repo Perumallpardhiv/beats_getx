@@ -28,7 +28,7 @@ class Player extends StatelessWidget {
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     height: 300,
                     width: 300,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: bgDarkcolor,
                       shape: BoxShape.circle,
                     ),
@@ -46,7 +46,7 @@ class Player extends StatelessWidget {
                             size: 20,
                           ),
                         ),
-                        Align(
+                        const Align(
                           alignment: Alignment.center,
                           child: CircleAvatar(
                             backgroundColor: bgDarkcolor,
@@ -57,11 +57,11 @@ class Player extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
+                    padding: const EdgeInsets.all(10),
+                    decoration: const BoxDecoration(
                       color: whitecolor,
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(20),
@@ -83,7 +83,7 @@ class Player extends StatelessWidget {
                             letterSpacing: 1.5,
                           ),
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         Text(
                           songModel[controller.playindex.value]
                               .artist
@@ -98,7 +98,7 @@ class Player extends StatelessWidget {
                             weight: FontWeight.w500,
                           ),
                         ),
-                        SizedBox(height: 12),
+                        const SizedBox(height: 12),
                         Obx(() {
                           return Row(
                             children: [
@@ -117,7 +117,7 @@ class Player extends StatelessWidget {
                                   value: controller.value.value,
                                   max: controller.max.value,
                                   min:
-                                      Duration(seconds: 0).inSeconds.toDouble(),
+                                      const Duration(seconds: 0).inSeconds.toDouble(),
                                   onChanged: (newValue) {
                                     controller.changeDurationToSeconds(
                                         newValue.toInt());
@@ -134,7 +134,7 @@ class Player extends StatelessWidget {
                             ],
                           );
                         }),
-                        SizedBox(height: 12),
+                        const SizedBox(height: 12),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
@@ -147,7 +147,7 @@ class Player extends StatelessWidget {
                                   controller.playindex.value - 1,
                                 );
                               },
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.skip_previous_rounded,
                                 size: 40,
                                 color: bgDarkcolor,
@@ -172,12 +172,12 @@ class Player extends StatelessWidget {
                                       }
                                     },
                                     icon: !controller.isPlaying.value
-                                        ? Icon(
+                                        ? const Icon(
                                             Icons.play_arrow_rounded,
                                             size: 40,
                                             color: whitecolor,
                                           )
-                                        : Icon(
+                                        : const Icon(
                                             Icons.pause_rounded,
                                             size: 40,
                                             color: whitecolor,
@@ -195,7 +195,7 @@ class Player extends StatelessWidget {
                                   controller.playindex.value + 1,
                                 );
                               },
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.skip_next_rounded,
                                 size: 40,
                                 color: bgDarkcolor,
